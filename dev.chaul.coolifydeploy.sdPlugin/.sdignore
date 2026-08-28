@@ -1,0 +1,6 @@
+# Files excluded from the packaged .streamDeckPlugin (.gitignore syntax)
+config.json
+config.example.json
+*.log
+plugin.log
+.DS_Store
