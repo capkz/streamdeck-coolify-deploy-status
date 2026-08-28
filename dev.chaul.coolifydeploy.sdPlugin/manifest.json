@@ -9,7 +9,7 @@
   "CategoryIcon": "imgs/categoryIcon",
   "Icon": "imgs/pluginIcon",
   "URL": "https://github.com/capkz/streamdeck-coolify-deploy-status",
-  "SDKVersion": 2,
+  "SDKVersion": 3,
   "CodePath": "plugin.js",
   "Nodejs": {
     "Version": "24"
