@@ -18,8 +18,14 @@
     "MinimumVersion": "7.1"
   },
   "OS": [
-    { "Platform": "windows", "MinimumVersion": "10" },
-    { "Platform": "mac", "MinimumVersion": "12" }
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    },
+    {
+      "Platform": "mac",
+      "MinimumVersion": "12"
+    }
   ],
   "Actions": [
     {
@@ -28,7 +34,9 @@
       "Icon": "imgs/actionIcon",
       "Tooltip": "Show the latest Coolify deployment status for one application.",
       "PropertyInspectorPath": "pi/index.html",
-      "Controllers": ["Keypad"],
+      "Controllers": [
+        "Keypad"
+      ],
       "States": [
         {
           "Image": "imgs/actionKey",
