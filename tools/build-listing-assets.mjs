@@ -4,7 +4,7 @@ import { writeFileSync, mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Resvg } from '@resvg/resvg-js';
-import { appIconSvg } from './lib-icons.mjs';
+import { appIconWithBadgeSvg } from './lib-icons.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = resolve(root, 'assets', 'marketing');
@@ -13,8 +13,10 @@ mkdirSync(out, { recursive: true });
 const png = (svg, w) => new Resvg(svg, { fitTo: { mode: 'width', value: w }, background: 'rgba(0,0,0,0)' }).render().asPng();
 
 // pre-rendered composite app icon, embedded as a data URI so it composites cleanly
-const appIconUri = 'data:image/png;base64,' + png(appIconSvg(), 512).toString('base64');
-const appIcon = (x, y, size) => `<image href="${appIconUri}" x="${x}" y="${y}" width="${size}" height="${size}"/>`;
+const appIconUri = 'data:image/png;base64,' + png(appIconWithBadgeSvg(), 512).toString('base64');
+const appIcon = (x, y, size) =>
+  `<clipPath id="appIconClip"><rect x="${x}" y="${y}" width="${size}" height="${size}" rx="${Math.round(size * 0.16)}"/></clipPath>` +
+  `<image href="${appIconUri}" x="${x}" y="${y}" width="${size}" height="${size}" clip-path="url(#appIconClip)"/>`;
 
 // ---- the plugin's key renderer (mirrors plugin.js) --------------------------
 const THEME = {

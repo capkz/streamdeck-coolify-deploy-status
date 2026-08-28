@@ -9,7 +9,7 @@ import { readFileSync, writeFileSync, copyFileSync, rmSync, mkdirSync } from 'no
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { Resvg } from '@resvg/resvg-js';
-import { appIconSvg } from './lib-icons.mjs';
+import { appIconWithBadgeSvg } from './lib-icons.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const assets = resolve(root, 'assets');
@@ -19,7 +19,7 @@ mkdirSync(out, { recursive: true });
 const png = (svg, w) =>
   new Resvg(svg, { fitTo: { mode: 'width', value: w }, background: 'rgba(0,0,0,0)' }).render().asPng();
 
-const APP_ICON = appIconSvg();
+const APP_ICON = appIconWithBadgeSvg();
 
 // raster targets: name -> [svg string, base px]
 const rasterTargets = {
