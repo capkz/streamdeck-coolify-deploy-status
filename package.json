@@ -15,10 +15,12 @@
     "pack": "streamdeck pack dev.chaul.coolifydeploy.sdPlugin --force",
     "link": "streamdeck link dev.chaul.coolifydeploy.sdPlugin",
     "restart": "streamdeck restart dev.chaul.coolifydeploy",
-    "dev": "streamdeck link dev.chaul.coolifydeploy.sdPlugin && streamdeck restart dev.chaul.coolifydeploy"
+    "dev": "streamdeck link dev.chaul.coolifydeploy.sdPlugin && streamdeck restart dev.chaul.coolifydeploy",
+    "icons": "node tools/build-icons.mjs"
   },
   "devDependencies": {
-    "@elgato/cli": "^1.9.0"
+    "@elgato/cli": "^1.9.0",
+    "@resvg/resvg-js": "^2.6.2"
   },
   "engines": {
     "node": ">=24"

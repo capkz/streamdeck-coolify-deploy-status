@@ -15,3 +15,6 @@ Thumbs.db
 *.swp
 .idea/
 .vscode/
+
+# local preview scratch
+_preview.png
