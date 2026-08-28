@@ -27,8 +27,11 @@ export function appIconSvg() {
  */
 export function appIconWithBadgeSvg() {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
-  <image href="${coolifyDataUri}" x="0" y="0" width="256" height="256"/>
-  <circle cx="186" cy="186" r="64" fill="#0C0C0D" stroke="#3A3A3E" stroke-width="2.5"/>
-  <g transform="translate(130 130) scale(0.80)">${badgeInner}</g>
+  <clipPath id="frame"><rect x="0" y="0" width="256" height="256"/></clipPath>
+  <g clip-path="url(#frame)">
+    <image href="${coolifyDataUri}" x="-38" y="-38" width="332" height="332"/>
+  </g>
+  <circle cx="214" cy="214" r="33" fill="#0C0C0D" stroke="#3A3A3E" stroke-width="2"/>
+  <g transform="translate(182.5 182.5) scale(0.437)">${badgeInner}</g>
 </svg>`;
 }

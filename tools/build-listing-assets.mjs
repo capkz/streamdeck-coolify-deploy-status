@@ -53,14 +53,14 @@ writeFileSync(resolve(out, 'thumbnail.png'), png(page(`
   ${appIcon(150, 300, 360)}
   ${text(150, 760, 92, 'Coolify Deploy Status', { w: 800 })}
   ${text(154, 828, 40, 'Your latest deploy — building, failed, or done — on a key.', { fill: '#a1a1aa', w: 600 })}
-  ${key({ state: 'building', label: 'API', sub: '2:14', foot: 'Fix varoma timings' }, 1180, 200, 1.7)}
+  ${key({ state: 'building', label: 'API', sub: '2:14', foot: '' }, 1180, 200, 1.7)}
   ${key({ state: 'ok', label: 'FE', sub: '3m52s', foot: '4m ago' }, 1470, 200, 1.7)}
   ${key({ state: 'failed', label: 'WEB', sub: '41s', foot: '1h ago' }, 1325, 470, 1.7)}
 `), 1920));
 
 // ---- 3. gallery: all states ----------------------------------------------
 const states = [
-  { state: 'building', label: 'API', sub: '2:14', foot: 'Fix varoma timings' },
+  { state: 'building', label: 'API', sub: '2:14', foot: 'Merge PR #128' },
   { state: 'queued', label: 'API', sub: '0:03', foot: '' },
   { state: 'ok', label: 'FE', sub: '3m52s', foot: '4m ago' },
   { state: 'failed', label: 'WEB', sub: '41s', foot: '1h ago' },
@@ -75,7 +75,7 @@ writeFileSync(resolve(out, 'gallery-1-states.png'), png(page(`
 // ---- 4. gallery: timing detail -----------------------------------------
 writeFileSync(resolve(out, 'gallery-2-timing.png'), png(page(`
   ${text(150, 150, 66, 'Live build timer + commit, then duration + age', { w: 800 })}
-  ${key({ state: 'building', label: 'API', sub: '2:14', foot: 'Fix varoma timings' }, 260, 300, 3.0)}
+  ${key({ state: 'building', label: 'API', sub: '2:14', foot: 'Merge PR #128' }, 260, 300, 3.0)}
   ${text(300, 300, 30, 'while building', { fill: '#d4a24a', w: 700 })}
   ${key({ state: 'ok', label: 'FE', sub: '3m52s', foot: '4m ago' }, 1160, 300, 3.0)}
   ${text(1200, 300, 30, 'after it finishes', { fill: '#4ca35a', w: 700 })}
