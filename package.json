@@ -16,7 +16,8 @@
     "link": "streamdeck link dev.chaul.coolifydeploy.sdPlugin",
     "restart": "streamdeck restart dev.chaul.coolifydeploy",
     "dev": "streamdeck link dev.chaul.coolifydeploy.sdPlugin && streamdeck restart dev.chaul.coolifydeploy",
-    "icons": "node tools/build-icons.mjs"
+    "icons": "node tools/build-icons.mjs",
+    "listing-assets": "node tools/build-listing-assets.mjs"
   },
   "devDependencies": {
     "@elgato/cli": "^1.9.0",
