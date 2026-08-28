@@ -1,0 +1,41 @@
+{
+  "$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
+  "UUID": "dev.chaul.coolifydeploy",
+  "Name": "Coolify Deploy Status",
+  "Version": "1.0.0.0",
+  "Author": "capkz",
+  "Description": "View-only keys that show the latest Coolify deployment of an application: building / failed / ok, with elapsed time. Press a key to open the deployment log.",
+  "Category": "Coolify Deploy Status",
+  "CategoryIcon": "imgs/categoryIcon",
+  "Icon": "imgs/pluginIcon",
+  "URL": "https://github.com/capkz/streamdeck-coolify-deploy-status",
+  "SDKVersion": 2,
+  "CodePath": "plugin.js",
+  "Nodejs": {
+    "Version": "24"
+  },
+  "Software": {
+    "MinimumVersion": "7.1"
+  },
+  "OS": [
+    { "Platform": "windows", "MinimumVersion": "10" },
+    { "Platform": "mac", "MinimumVersion": "12" }
+  ],
+  "Actions": [
+    {
+      "UUID": "dev.chaul.coolifydeploy.status",
+      "Name": "Deploy Status",
+      "Icon": "imgs/actionIcon",
+      "Tooltip": "Show the latest Coolify deployment status for one application.",
+      "PropertyInspectorPath": "pi/index.html",
+      "Controllers": ["Keypad"],
+      "States": [
+        {
+          "Image": "imgs/actionKey",
+          "TitleAlignment": "middle",
+          "ShowTitle": false
+        }
+      ]
+    }
+  ]
+}

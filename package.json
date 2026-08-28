@@ -1,0 +1,26 @@
+{
+  "name": "streamdeck-coolify-deploy-status",
+  "version": "1.0.0",
+  "description": "Stream Deck plugin: view-only keys showing the latest Coolify deployment status (building / failed / ok) and elapsed time.",
+  "private": true,
+  "license": "MIT",
+  "author": "capkz",
+  "homepage": "https://github.com/capkz/streamdeck-coolify-deploy-status",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/capkz/streamdeck-coolify-deploy-status.git"
+  },
+  "scripts": {
+    "validate": "streamdeck validate dev.chaul.coolifydeploy.sdPlugin",
+    "pack": "streamdeck pack dev.chaul.coolifydeploy.sdPlugin --force",
+    "link": "streamdeck link dev.chaul.coolifydeploy.sdPlugin",
+    "restart": "streamdeck restart dev.chaul.coolifydeploy",
+    "dev": "streamdeck link dev.chaul.coolifydeploy.sdPlugin && streamdeck restart dev.chaul.coolifydeploy"
+  },
+  "devDependencies": {
+    "@elgato/cli": "^1.9.0"
+  },
+  "engines": {
+    "node": ">=24"
+  }
+}

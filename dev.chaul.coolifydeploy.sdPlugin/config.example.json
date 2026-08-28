@@ -1,0 +1,5 @@
+{
+  "_comment": "Optional. Copy to config.json for a self-hosted setup where you would rather not type credentials into the Stream Deck property inspector. On first run the plugin copies these values into Stream Deck global settings, after which config.json is no longer needed. config.json is git-ignored - never commit a real token.",
+  "baseUrl": "https://coolify.example.com",
+  "token": "your-read-only-coolify-api-token"
+}

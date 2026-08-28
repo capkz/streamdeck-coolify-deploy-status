@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Coolify Deploy Status</title>
+  <style>
+    body { font-family: -apple-system, "Segoe UI", Arial, sans-serif; font-size: 13px; color: #d8d8d8; background: #2d2d2d; margin: 0; padding: 12px; }
+    .row { display: flex; align-items: center; margin-bottom: 9px; }
+    .row > label { flex: 0 0 92px; text-align: right; padding-right: 10px; color: #9a9a9a; }
+    .row input, .row select { flex: 1 1 auto; min-width: 0; background: #3d3d3d; border: 1px solid #4d4d4d; border-radius: 4px; color: #fff; padding: 5px 7px; font-size: 13px; }
+    .row select:disabled { color: #888; }
+    .msg { margin: 2px 0 10px 102px; min-height: 16px; }
+    .msg.ok { color: #5bbd6b; }
+    .msg.err { color: #e07a7a; }
+    .msg.info { color: #7f7f7f; }
+    .sep { border-top: 1px solid #444; margin: 12px 0 10px; }
+    .hint { color: #7f7f7f; margin: -4px 0 10px 102px; }
+    button.mini { flex: 0 0 auto; margin-left: 8px; background: #444; color: #ddd; border: 1px solid #555; border-radius: 4px; padding: 5px 9px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="row">
+    <label for="baseUrl">Base URL</label>
+    <input id="baseUrl" type="text" placeholder="https://coolify.example.com" autocomplete="off" />
+  </div>
+  <div class="row">
+    <label for="token">API token</label>
+    <input id="token" type="password" placeholder="read-only Coolify API token" autocomplete="off" />
+    <button class="mini" id="reload" type="button">Load apps</button>
+  </div>
+  <div class="hint">Coolify &rarr; Keys &amp; Tokens &rarr; API Tokens (needs API access enabled in Settings &rarr; Advanced). Saved once, shared by every Coolify key.</div>
+  <div class="msg info" id="conn">&nbsp;</div>
+
+  <div class="sep"></div>
+
+  <div class="row">
+    <label for="app">Application</label>
+    <select id="app" disabled><option value="">— load apps first —</option></select>
+  </div>
+  <div class="row">
+    <label for="label">Key label</label>
+    <input id="label" type="text" placeholder="auto from app name" maxlength="7" autocomplete="off" />
+  </div>
+  <div class="row">
+    <label for="pollSeconds">Poll (s)</label>
+    <input id="pollSeconds" type="number" min="2" max="120" placeholder="auto: 3s building / 15s idle" />
+  </div>
+
+  <script>
+    let ws, piCtx, actionUUID;
+    let settings = {};       // per-action
+    let globals = {};        // shared
+    let debounceT;
+
+    const $ = id => document.getElementById(id);
+
+    function connectElgatoStreamDeckSocket(port, inUUID, registerEvent, info, actionInfo) {
+      piCtx = inUUID;
+      try {
+        const ai = JSON.parse(actionInfo);
+        settings = (ai.payload && ai.payload.settings) || {};
+        actionUUID = ai.action;
+      } catch (e) { settings = {}; }
+
+      ws = new WebSocket('ws://127.0.0.1:' + port);
+      ws.onopen = () => {
+        ws.send(JSON.stringify({ event: registerEvent, uuid: inUUID }));
+        ws.send(JSON.stringify({ event: 'getGlobalSettings', context: inUUID }));
+        fillAction();
+      };
+      ws.onmessage = (e) => {
+        let msg; try { msg = JSON.parse(e.data); } catch (_) { return; }
+        if (msg.event === 'didReceiveGlobalSettings') {
+          globals = (msg.payload && msg.payload.settings) || {};
+          $('baseUrl').value = globals.baseUrl || '';
+          $('token').value = globals.token || '';
+          requestApps();
+        } else if (msg.event === 'sendToPropertyInspector') {
+          onPlugin(msg.payload || {});
+        }
+      };
+    }
+    window.connectElgatoStreamDeckSocket = connectElgatoStreamDeckSocket;
+
+    function saveAction() {
+      ws && ws.readyState === 1 &&
+        ws.send(JSON.stringify({ event: 'setSettings', context: piCtx, payload: settings }));
+    }
+    function saveGlobals() {
+      ws && ws.readyState === 1 &&
+        ws.send(JSON.stringify({ event: 'setGlobalSettings', context: piCtx, payload: globals }));
+    }
+
+    function setConn(text, cls) {
+      const el = $('conn');
+      el.textContent = text || ' ';
+      el.className = 'msg ' + (cls || 'info');
+    }
+
+    function requestApps() {
+      const baseUrl = $('baseUrl').value.trim().replace(/\/+$/, '');
+      const token = $('token').value.trim();
+      if (!baseUrl || !token) { setConn('Enter Base URL and API token.', 'info'); return; }
+      setConn('Loading applications…', 'info');
+      ws && ws.send(JSON.stringify({
+        event: 'sendToPlugin', action: actionUUID, context: piCtx,
+        payload: { cmd: 'listApps', baseUrl: baseUrl, token: token },
+      }));
+    }
+
+    function onPlugin(p) {
+      if (p.event !== 'apps') return;
+      const sel = $('app');
+      if (!p.ok) { setConn(p.error || 'Failed to load applications.', 'err'); return; }
+      const apps = p.apps || [];
+      sel.innerHTML = '';
+      const ph = document.createElement('option');
+      ph.value = ''; ph.textContent = apps.length ? '— select an application —' : '— no applications found —';
+      sel.appendChild(ph);
+      for (const a of apps) {
+        const o = document.createElement('option');
+        o.value = a.uuid;
+        o.textContent = a.fqdn ? `${a.name}  (${a.fqdn.replace(/^https?:\/\//, '')})` : a.name;
+        o.dataset.name = a.name;
+        sel.appendChild(o);
+      }
+      sel.disabled = false;
+      if (settings.appUuid) sel.value = settings.appUuid;
+      setConn(`${apps.length} application${apps.length === 1 ? '' : 's'} loaded.`, 'ok');
+    }
+
+    function fillAction() {
+      $('label').value = settings.label || '';
+      $('pollSeconds').value = settings.pollSeconds || '';
+    }
+
+    // --- connection fields -> global settings (debounced) ---
+    function onConnInput() {
+      globals.baseUrl = $('baseUrl').value.trim().replace(/\/+$/, '');
+      globals.token = $('token').value.trim();
+      saveGlobals();
+      clearTimeout(debounceT);
+      debounceT = setTimeout(requestApps, 600);
+    }
+    $('baseUrl').addEventListener('input', onConnInput);
+    $('token').addEventListener('input', onConnInput);
+    $('reload').addEventListener('click', requestApps);
+
+    // --- app selection -> per-action settings ---
+    $('app').addEventListener('change', () => {
+      const sel = $('app');
+      const opt = sel.options[sel.selectedIndex];
+      if (!sel.value) { delete settings.appUuid; delete settings.appName; }
+      else {
+        settings.appUuid = sel.value;
+        settings.appName = (opt && opt.dataset.name) || '';
+        if (!settings.label && settings.appName) {
+          const n = settings.appName.trim();
+          $('label').value = n.length <= 7 ? n.toUpperCase() : n.slice(0, 7);
+          settings.label = $('label').value;
+        }
+      }
+      saveAction();
+    });
+
+    $('label').addEventListener('input', () => {
+      const v = $('label').value.trim();
+      if (v) settings.label = v; else delete settings.label;
+      saveAction();
+    });
+    $('pollSeconds').addEventListener('input', () => {
+      const v = $('pollSeconds').value.trim();
+      if (v) settings.pollSeconds = String(Math.max(2, Math.min(120, parseInt(v, 10) || 0)));
+      else delete settings.pollSeconds;
+      saveAction();
+    });
+  </script>
+</body>
+</html>
